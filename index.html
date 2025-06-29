@@ -1,116 +1,19 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма записи клиентов</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #message {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            display: none;
-        }
-        .success {
-            background-color: #dff0d8;
-            color: #3c763d;
-        }
-        .error {
-            background-color: #f2dede;
-            color: #a94442;
-        }
-    </style>
-</head>
-<body>
-    <h1>Форма записи клиентов</h1>
-    <form id="clientForm">
-        <input type="hidden" name="access_key" value="677d9ece-45fd-481b-8b40-e946b4c169fe">
-        <input type="hidden" name="subject" value="Новая заявка с сайта">
-        
-        <div class="form-group">
-            <label for="name">Имя:</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-            <label for="phone">Телефон:</label>
-            <input type="tel" id="phone" name="phone" required>
-        </div>
-        <button type="submit">Отправить</button>
-    </form>
-    <div id="message"></div>
+<form action="https://api.web3forms.com/submit" method="POST">
 
-    <script>
-        document.getElementById('clientForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitButton = this.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Отправка...';
-            
-            const formData = new FormData(this);
-            
-            fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                body: formData
-            })
-            .then(async (response) => {
-                const data = await response.json();
-                
-                const messageDiv = document.getElementById('message');
-                if (response.ok && data.success) {
-                    messageDiv.textContent = 'Данные успешно отправлены!';
-                    messageDiv.className = 'success';
-                    document.getElementById('clientForm').reset();
-                } else {
-                    messageDiv.textContent = 'Ошибка: ' + (data.message || 'Неизвестная ошибка');
-                    messageDiv.className = 'error';
-                }
-                messageDiv.style.display = 'block';
-            })
-            .catch(error => {
-                const messageDiv = document.getElementById('message');
-                messageDiv.textContent = 'Ошибка при отправке данных: ' + error.message;
-                messageDiv.className = 'error';
-                messageDiv.style.display = 'block';
-            })
-            .finally(() => {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Отправить';
-            });
-        });
-    </script>
-</body>
-</html>
+    <!-- Replace with your Access Key -->
+    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+
+    <!-- Form Inputs. Each input must have a name="" attribute -->
+    <input type="text" name="name" required>
+    <input type="email" name="email" required>
+    <textarea name="message" required></textarea>
+
+    <!-- Honeypot Spam Protection -->
+    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+    <!-- Custom Confirmation / Success Page -->
+    <!-- <input type="hidden" name="redirect" value="https://mywebsite.com/thanks.html"> -->
+
+    <button type="submit">Submit Form</button>
+
+</form>
