@@ -57,6 +57,9 @@
 <body>
     <h1>Форма записи клиентов</h1>
     <form id="clientForm">
+        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY">
+        <input type="hidden" name="subject" value="Новая заявка с сайта">
+        
         <div class="form-group">
             <label for="name">Имя:</label>
             <input type="text" id="name" name="name" required>
@@ -77,35 +80,26 @@
         document.getElementById('clientForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Показать загрузку
             const submitButton = this.querySelector('button[type="submit"]');
             submitButton.disabled = true;
             submitButton.textContent = 'Отправка...';
             
-            // Собрать данные формы
-            const formData = {
-                name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value
-            };
+            const formData = new FormData(this);
             
-            // Отправить данные на Google Apps Script
-            fetch('https://script.google.com/macros/s/AKfycbziYa_7fPgzIISm3r-njKVJLw0exMPrgMYt0C_js3nvOaUIuy4q-EH6D8bXlfUU4d7nXw/exec', {
+            fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
+                body: formData
             })
-            .then(response => response.json())
-            .then(data => {
+            .then(async (response) => {
+                const data = await response.json();
+                
                 const messageDiv = document.getElementById('message');
-                if (data.result === 'success') {
-                    messageDiv.textContent = 'Данные успешно сохранены!';
+                if (response.ok && data.success) {
+                    messageDiv.textContent = 'Данные успешно отправлены!';
                     messageDiv.className = 'success';
                     document.getElementById('clientForm').reset();
                 } else {
-                    messageDiv.textContent = 'Ошибка: ' + data.message;
+                    messageDiv.textContent = 'Ошибка: ' + (data.message || 'Неизвестная ошибка');
                     messageDiv.className = 'error';
                 }
                 messageDiv.style.display = 'block';
